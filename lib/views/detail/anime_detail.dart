@@ -1,5 +1,6 @@
+// detail_screen.dart
 import 'package:flutter/material.dart';
-import 'package:modul_3/network/base_network.dart';
+import 'package:modul_3/presenters/anime_detail_presenter.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key, required this.id, required this.endpoint});
@@ -10,7 +11,9 @@ class DetailScreen extends StatefulWidget {
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
-class _DetailScreenState extends State<DetailScreen> {
+class _DetailScreenState extends State<DetailScreen>
+    implements AnimeDetailView {
+  late AnimeDetailPresenter _presenter;
   bool _isLoading = true;
   Map<String, dynamic>? _detailData;
   String? _errorMessage;
@@ -18,45 +21,62 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchDetailData();
+    _presenter = AnimeDetailPresenter(this);
+    _presenter.loadDetailData(widget.endpoint, widget.id);
   }
 
-  Future<void> _fetchDetailData() async {
-    try {
-      final data = await BaseNetwork.getDetailData(widget.endpoint, widget.id);
-      setState(() {
-        _detailData = data;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-      });
-    }
+  @override
+  void showLoading() {
+    setState(() {
+      _isLoading = true;
+    });
+  }
+
+  @override
+  void hideLoading() {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void showDetailData(Map<String, dynamic> detailData) {
+    setState(() {
+      _detailData = detailData;
+    });
+  }
+
+  @override
+  void showError(String message) {
+    setState(() {
+      _errorMessage = message;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Detail"),
-        ),
-        body: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : _errorMessage != null
-                ? Center(child: Text("Error ${_errorMessage}"))
-                : _detailData != null
-                    ? Column(
-                        children: [
-                          Image.network(_detailData!['images'][0] ??
-                              'https://placehold.co/600x400'),
-                          Text("Name : ${_detailData!['name']}"),
-                          Text(
-                              "Kekkei Genkai : ${_detailData!['personal']['kekkeiGenkai'] ?? 'Empty'}"),
-                          Text("Title : ${_detailData!['personal']['titles']}")
-                        ],
-                      )
-                    : Text("Tidak ada data!"));
+      appBar: AppBar(
+        title: Text("Detail"),
+      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _errorMessage != null
+              ? Center(child: Text("Error: $_errorMessage"))
+              : _detailData != null
+                  ? Column(
+                      children: [
+                        Image.network(
+                          _detailData!['images'][0] ??
+                              'https://placehold.co/600x400',
+                        ),
+                        Text("Name : ${_detailData!['name']}"),
+                        Text(
+                            "Kekkei Genkai : ${_detailData!['personal']['kekkeiGenkai'] ?? 'Empty'}"),
+                        Text("Title : ${_detailData!['personal']['titles']}"),
+                      ],
+                    )
+                  : Center(child: Text("Tidak ada data!")),
+    );
   }
 }

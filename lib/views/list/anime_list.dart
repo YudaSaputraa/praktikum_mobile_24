@@ -99,14 +99,18 @@ class _AnimeListScreenState extends State<AnimeListScreen>
                               subtitle: Text('Family ${anime.familyCreator}'),
                               onTap: () {
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DetailScreen(
-                                            id: anime.id,
-                                            endpoint: _currentEndpoint)));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailScreen(
+                                      id: anime.id,
+                                        endpoint: _currentEndpoint),
+                                ),
+                              );
                               },
                             );
-                          }))
+                        },
+                      ),
+          )
         ],
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:modul_3/views/authentication/login_pages.dart';
 import 'package:modul_3/views/list/anime_list.dart';
 
 void main() {
