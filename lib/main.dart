@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:modul_3/models/boxes.dart';
 import 'package:modul_3/models/todo.dart';
+import 'package:modul_3/views/camera_access/camera_access_screen.dart';
 import 'package:modul_3/views/shared_pref/shared_pref.dart';
 import 'package:modul_3/views/todolist/todo_list_screen.dart';
 
@@ -24,9 +25,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: TodoListScreen(
-        title: 'Todo List',
-      ),
+        home: CameraAccessScreen()
     );
   }
 }
